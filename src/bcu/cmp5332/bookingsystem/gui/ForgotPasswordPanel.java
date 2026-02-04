@@ -26,7 +26,11 @@ public class ForgotPasswordPanel extends JPanel {
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(UIStyles.CARD_BACKGROUND);
-        setBorder(new EmptyBorder(40, 40, 40, 40));
+        setBorder(new EmptyBorder(30, 50, 30, 50));
+        
+        // Set fixed width for consistent appearance
+        setPreferredSize(new Dimension(400, 400));
+        setMaximumSize(new Dimension(400, 500));
 
         initializeComponents();
     }
@@ -46,14 +50,18 @@ public class ForgotPasswordPanel extends JPanel {
         add(titleLabel);
         add(Box.createVerticalStrut(10));
 
-        // Subtitle
-        JLabel subtitleLabel = new JLabel("<html><div style='text-align: center; width: 280px;'>" +
-            "Enter your email address and we'll send you a link to reset your password." +
-            "</div></html>");
-        subtitleLabel.setFont(UIStyles.LOGIN_SUBTITLE_FONT);
-        subtitleLabel.setForeground(UIStyles.TEXT_SECONDARY);
-        subtitleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        add(subtitleLabel);
+        // Subtitle - using JTextArea for proper wrapping
+        JTextArea subtitleText = new JTextArea("Enter your email address and we'll send you a link to reset your password.");
+        subtitleText.setFont(UIStyles.LOGIN_SUBTITLE_FONT);
+        subtitleText.setForeground(UIStyles.TEXT_SECONDARY);
+        subtitleText.setOpaque(false);
+        subtitleText.setEditable(false);
+        subtitleText.setFocusable(false);
+        subtitleText.setLineWrap(true);
+        subtitleText.setWrapStyleWord(true);
+        subtitleText.setAlignmentX(Component.CENTER_ALIGNMENT);
+        subtitleText.setMaximumSize(new Dimension(300, 60));
+        add(subtitleText);
         add(Box.createVerticalStrut(30));
 
         // Email field

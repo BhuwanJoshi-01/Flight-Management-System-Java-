@@ -3,17 +3,35 @@ package bcu.cmp5332.bookingsystem.gui;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 /**
  * Right-side hero panel for the login page with gradient background and statistics.
  * Displays promotional content and key metrics.
+ * 
+ * Responsive behavior:
+ * - Decorative circles scale with panel size
+ * - Stats panel adapts to available width
+ * - Text remains readable at all sizes
  */
 public class HeroPanel extends JPanel {
+    
+    private JPanel statsPanel;
+    private boolean verticalStats = false;
 
     public HeroPanel() {
-        setLayout(new BorderLayout());
-        setPreferredSize(new Dimension(500, 600));
+        setLayout(new GridBagLayout());
+        setMinimumSize(new Dimension(300, 400));
         initializeComponents();
+        
+        // Add resize listener for responsive stats layout
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                updateStatsLayout();
+            }
+        });
     }
 
     @Override
@@ -30,34 +48,34 @@ public class HeroPanel extends JPanel {
         g2d.setPaint(gradient);
         g2d.fillRect(0, 0, getWidth(), getHeight());
 
-        // Draw decorative circles (blur effect simulation)
+        // Draw decorative circles (scaled based on panel size)
         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.1f));
         
-        // Top-right circle
+        // Top-right circle - scales with panel width
         g2d.setColor(UIStyles.PRIMARY_COLOR);
-        int circleSize1 = 300;
+        int circleSize1 = Math.min(300, getWidth() / 2);
         g2d.fillOval(getWidth() - circleSize1 / 2, -50, circleSize1, circleSize1);
         
-        // Bottom-left circle
+        // Bottom-left circle - scales with panel size
         g2d.setColor(UIStyles.ACCENT_CYAN);
-        int circleSize2 = 250;
+        int circleSize2 = Math.min(250, getWidth() * 2 / 5);
         g2d.fillOval(-50, getHeight() - circleSize2, circleSize2, circleSize2);
         
         g2d.dispose();
     }
 
     private void initializeComponents() {
-        // Main content panel (centered)
+        // Main content panel (centered using GridBagLayout of parent)
         JPanel contentPanel = new JPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         contentPanel.setOpaque(false);
-        contentPanel.setBorder(new EmptyBorder(60, 50, 60, 50));
+        contentPanel.setBorder(new EmptyBorder(40, 30, 40, 30));
 
         // Airplane icon
         JLabel iconLabel = createAirplaneIcon();
         iconLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         contentPanel.add(iconLabel);
-        contentPanel.add(Box.createVerticalStrut(30));
+        contentPanel.add(Box.createVerticalStrut(25));
 
         // Title
         JLabel titleLabel = new JLabel("Your Journey Starts Here");
@@ -65,25 +83,74 @@ public class HeroPanel extends JPanel {
         titleLabel.setForeground(Color.WHITE);
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         contentPanel.add(titleLabel);
-        contentPanel.add(Box.createVerticalStrut(15));
+        contentPanel.add(Box.createVerticalStrut(12));
 
-        // Subtitle
-        JLabel subtitleLabel = new JLabel("<html><div style='text-align: center; width: 350px;'>" +
-            "Book flights to destinations around the world with our modern, easy-to-use booking system." +
-            "</div></html>");
-        subtitleLabel.setFont(UIStyles.HERO_SUBTITLE_FONT);
-        subtitleLabel.setForeground(new Color(255, 255, 255, 200));
-        subtitleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        contentPanel.add(subtitleLabel);
-        contentPanel.add(Box.createVerticalStrut(50));
+        // Subtitle - using JTextArea for proper wrapping
+        JTextArea subtitleText = new JTextArea("Book flights to destinations around the world with our modern, easy-to-use booking system.");
+        subtitleText.setFont(UIStyles.HERO_SUBTITLE_FONT);
+        subtitleText.setForeground(new Color(255, 255, 255, 200));
+        subtitleText.setOpaque(false);
+        subtitleText.setEditable(false);
+        subtitleText.setFocusable(false);
+        subtitleText.setLineWrap(true);
+        subtitleText.setWrapStyleWord(true);
+        subtitleText.setAlignmentX(Component.CENTER_ALIGNMENT);
+        subtitleText.setMaximumSize(new Dimension(380, 80));
+        subtitleText.setPreferredSize(new Dimension(350, 60));
+        
+        // Center the text area
+        JPanel subtitleWrapper = new JPanel();
+        subtitleWrapper.setLayout(new BoxLayout(subtitleWrapper, BoxLayout.X_AXIS));
+        subtitleWrapper.setOpaque(false);
+        subtitleWrapper.add(Box.createHorizontalGlue());
+        subtitleWrapper.add(subtitleText);
+        subtitleWrapper.add(Box.createHorizontalGlue());
+        contentPanel.add(subtitleWrapper);
+        contentPanel.add(Box.createVerticalStrut(40));
 
         // Statistics panel
-        JPanel statsPanel = createStatsPanel();
+        statsPanel = createStatsPanel();
         statsPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         contentPanel.add(statsPanel);
 
-        // Center the content vertically
-        add(contentPanel, BorderLayout.CENTER);
+        // Add content panel centered in the hero
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1;
+        gbc.weighty = 1;
+        gbc.anchor = GridBagConstraints.CENTER;
+        add(contentPanel, gbc);
+    }
+    
+    private void updateStatsLayout() {
+        boolean shouldBeVertical = getWidth() < 350;
+        
+        if (shouldBeVertical != verticalStats) {
+            verticalStats = shouldBeVertical;
+            rebuildStatsPanel();
+        }
+    }
+    
+    private void rebuildStatsPanel() {
+        statsPanel.removeAll();
+        
+        if (verticalStats) {
+            statsPanel.setLayout(new BoxLayout(statsPanel, BoxLayout.Y_AXIS));
+            statsPanel.add(createStatItem("500+", "Destinations"));
+            statsPanel.add(Box.createVerticalStrut(15));
+            statsPanel.add(createStatItem("50K+", "Happy Travelers"));
+            statsPanel.add(Box.createVerticalStrut(15));
+            statsPanel.add(createStatItem("24/7", "Support"));
+        } else {
+            statsPanel.setLayout(new GridLayout(1, 3, 20, 0));
+            statsPanel.add(createStatItem("500+", "Destinations"));
+            statsPanel.add(createStatItem("50K+", "Happy Travelers"));
+            statsPanel.add(createStatItem("24/7", "Support"));
+        }
+        
+        statsPanel.revalidate();
+        statsPanel.repaint();
     }
 
     private JLabel createAirplaneIcon() {
@@ -117,9 +184,8 @@ public class HeroPanel extends JPanel {
     }
 
     private JPanel createStatsPanel() {
-        JPanel panel = new JPanel(new GridLayout(1, 3, 30, 0));
+        JPanel panel = new JPanel(new GridLayout(1, 3, 20, 0));
         panel.setOpaque(false);
-        panel.setMaximumSize(new Dimension(400, 80));
 
         // Stat 1: Destinations
         panel.add(createStatItem("500+", "Destinations"));

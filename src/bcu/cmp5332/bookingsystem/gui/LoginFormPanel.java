@@ -38,7 +38,11 @@ public class LoginFormPanel extends JPanel {
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(UIStyles.CARD_BACKGROUND);
-        setBorder(new EmptyBorder(40, 40, 40, 40));
+        setBorder(new EmptyBorder(30, 50, 30, 50));
+        
+        // Set fixed width for consistent appearance
+        setPreferredSize(new Dimension(400, 600));
+        setMaximumSize(new Dimension(400, 700));
 
         initializeComponents();
     }

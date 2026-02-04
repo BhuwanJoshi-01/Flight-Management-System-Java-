@@ -5,6 +5,8 @@ import bcu.cmp5332.bookingsystem.model.FlightBookingSystem;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -13,14 +15,20 @@ import java.io.IOException;
  * Main login window with split-panel layout.
  * Left side: Login/Register/Forgot password forms
  * Right side: Hero panel with promotional content
+ * 
+ * Responsive behavior:
+ * - >= 800px width: Shows both form and hero panels (55%/45% split)
+ * - < 800px width: Shows only form panel (hero hidden)
  */
 public class LoginWindow extends JFrame {
 
     private static final int WINDOW_WIDTH = 1100;
     private static final int WINDOW_HEIGHT = 700;
+    private static final int BREAKPOINT_WIDTH = 800;
 
     private final FlightBookingSystem flightBookingSystem;
     
+    private JPanel mainPanel;
     private JPanel leftPanel;
     private CardLayout cardLayout;
     
@@ -28,6 +36,8 @@ public class LoginWindow extends JFrame {
     private RegisterFormPanel registerFormPanel;
     private ForgotPasswordPanel forgotPasswordPanel;
     private HeroPanel heroPanel;
+    
+    private boolean heroVisible = true;
 
     // Card names for navigation
     private static final String LOGIN_CARD = "login";
@@ -50,7 +60,7 @@ public class LoginWindow extends JFrame {
         // Window setup
         setTitle("SkyBook - Flight Booking System");
         setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-        setMinimumSize(new Dimension(900, 600));
+        setMinimumSize(new Dimension(500, 600));
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -62,25 +72,74 @@ public class LoginWindow extends JFrame {
             }
         });
 
-        // Main layout
-        setLayout(new BorderLayout());
-
-        // Create components
+        // Create components first
         createLeftPanel();
         createRightPanel();
-
-        // Add to frame
-        add(leftPanel, BorderLayout.CENTER);
-        add(heroPanel, BorderLayout.EAST);
+        
+        // Main panel using GridBagLayout for proportional sizing
+        mainPanel = new JPanel(new GridBagLayout());
+        mainPanel.setBackground(UIStyles.CARD_BACKGROUND);
+        
+        layoutPanels();
+        
+        setContentPane(mainPanel);
+        
+        // Add resize listener for responsive behavior
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                handleResize();
+            }
+        });
 
         setVisible(true);
+    }
+    
+    private void layoutPanels() {
+        mainPanel.removeAll();
+        GridBagConstraints gbc = new GridBagConstraints();
+        
+        if (heroVisible) {
+            // Left panel (form) - 45% width
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            gbc.weightx = 0.45;
+            gbc.weighty = 1.0;
+            gbc.fill = GridBagConstraints.BOTH;
+            mainPanel.add(leftPanel, gbc);
+            
+            // Right panel (hero) - 55% width
+            gbc.gridx = 1;
+            gbc.weightx = 0.55;
+            mainPanel.add(heroPanel, gbc);
+        } else {
+            // Only form panel - centered, full width
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            gbc.weightx = 1.0;
+            gbc.weighty = 1.0;
+            gbc.fill = GridBagConstraints.BOTH;
+            mainPanel.add(leftPanel, gbc);
+        }
+        
+        mainPanel.revalidate();
+        mainPanel.repaint();
+    }
+    
+    private void handleResize() {
+        int width = getWidth();
+        boolean shouldShowHero = width >= BREAKPOINT_WIDTH;
+        
+        if (shouldShowHero != heroVisible) {
+            heroVisible = shouldShowHero;
+            layoutPanels();
+        }
     }
 
     private void createLeftPanel() {
         cardLayout = new CardLayout();
         leftPanel = new JPanel(cardLayout);
         leftPanel.setBackground(UIStyles.CARD_BACKGROUND);
-        leftPanel.setPreferredSize(new Dimension(500, WINDOW_HEIGHT));
 
         // Create form panels with callbacks
         loginFormPanel = new LoginFormPanel(
@@ -101,22 +160,21 @@ public class LoginWindow extends JFrame {
             () -> showCard(LOGIN_CARD)         // onBackToLogin
         );
 
-        // Wrap panels in scroll panes for smaller screens
-        JScrollPane loginScroll = createScrollPane(loginFormPanel);
-        JScrollPane registerScroll = createScrollPane(registerFormPanel);
-        JScrollPane forgotScroll = createScrollPane(forgotPasswordPanel);
+        // Wrap panels in centered wrappers (no scroll panes)
+        JPanel loginWrapper = createCenteredWrapper(loginFormPanel);
+        JPanel registerWrapper = createCenteredWrapper(registerFormPanel);
+        JPanel forgotWrapper = createCenteredWrapper(forgotPasswordPanel);
 
         // Add cards
-        leftPanel.add(loginScroll, LOGIN_CARD);
-        leftPanel.add(registerScroll, REGISTER_CARD);
-        leftPanel.add(forgotScroll, FORGOT_CARD);
+        leftPanel.add(loginWrapper, LOGIN_CARD);
+        leftPanel.add(registerWrapper, REGISTER_CARD);
+        leftPanel.add(forgotWrapper, FORGOT_CARD);
 
         // Show login by default
         showCard(LOGIN_CARD);
     }
 
-    private JScrollPane createScrollPane(JPanel panel) {
-        // Create a wrapper panel to center the form
+    private JPanel createCenteredWrapper(JPanel panel) {
         JPanel wrapper = new JPanel(new GridBagLayout());
         wrapper.setBackground(UIStyles.CARD_BACKGROUND);
         
@@ -128,16 +186,8 @@ public class LoginWindow extends JFrame {
         gbc.fill = GridBagConstraints.NONE;
         gbc.anchor = GridBagConstraints.CENTER;
         
-        // Set maximum width for the form panel
-        panel.setMaximumSize(new Dimension(400, panel.getPreferredSize().height));
         wrapper.add(panel, gbc);
-
-        JScrollPane scrollPane = new JScrollPane(wrapper);
-        scrollPane.setBorder(null);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-        return scrollPane;
+        return wrapper;
     }
 
     private void createRightPanel() {
