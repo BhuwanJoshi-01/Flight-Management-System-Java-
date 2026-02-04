@@ -172,12 +172,12 @@ public class CustomerMainWindow extends JFrame {
         avatarLabel.setFont(new Font("Segoe UI Symbol", Font.PLAIN, 20));
         avatarLabel.setForeground(UIStyles.TEXT_SECONDARY);
         
-        JLabel nameLabel = new JLabel(currentCustomer.getName());
-        nameLabel.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        nameLabel.setForeground(UIStyles.TEXT_PRIMARY);
+        userLabel = new JLabel(currentCustomer.getName());
+        userLabel.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        userLabel.setForeground(UIStyles.TEXT_PRIMARY);
         
         userBox.add(avatarLabel);
-        userBox.add(nameLabel);
+        userBox.add(userLabel);
         rightPanel.add(userBox);
 
         header.add(leftPanel, BorderLayout.WEST);

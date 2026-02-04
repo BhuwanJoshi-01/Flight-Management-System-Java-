@@ -36,7 +36,7 @@ public class CustomerDashboardPanel extends JPanel {
         this.fbs = parentWindow.getFlightBookingSystem();
 
         setLayout(new BorderLayout(0, 20));
-        setBackground(UIStyles.BACKGROUND_COLOR);
+        setBackground(new Color(247, 249, 252));
         setBorder(new EmptyBorder(20, 20, 20, 20));
 
         initializeComponents();
@@ -112,13 +112,15 @@ public class CustomerDashboardPanel extends JPanel {
         leftPanel.add(subtitleLabel);
 
         // Right side - search button
-        JButton searchButton = new JButton("⌕  Search Flights") {
+        JButton searchButton = new JButton("  Search Flights  →") {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(UIStyles.PRIMARY_COLOR);
-                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 12, 12);
+                g2.setPaint(new GradientPaint(0, 0, new Color(8, 142, 214), getWidth(), 0, new Color(10, 160, 220)));
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 14, 14);
+                g2.setColor(new Color(0, 0, 0, 35));
+                g2.fillRoundRect(3, getHeight() - 6, getWidth() - 6, 8, 12, 12);
                 g2.dispose();
                 super.paintComponent(g);
             }
@@ -129,7 +131,7 @@ public class CustomerDashboardPanel extends JPanel {
         searchButton.setBorderPainted(false);
         searchButton.setContentAreaFilled(false);
         searchButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        searchButton.setPreferredSize(new Dimension(180, 48));
+        searchButton.setPreferredSize(new Dimension(190, 48));
         searchButton.addActionListener(e -> parentWindow.showPanel("search"));
 
         panel.add(leftPanel, BorderLayout.WEST);
@@ -172,21 +174,25 @@ public class CustomerDashboardPanel extends JPanel {
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                
-                // Card background and shadow
+
+                // Soft shadow
+                g2.setColor(new Color(15, 23, 42, 35));
+                g2.fillRoundRect(6, 8, getWidth() - 12, getHeight() - 10, 18, 18);
+
+                // Card background
                 g2.setColor(Color.WHITE);
-                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 16, 16);
-                
-                // Left accent bar
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 18, 18);
+
+                // Top accent bar
                 g2.setColor(accentColor);
-                g2.fillRoundRect(0, 0, 4, getHeight(), 0, 0);
-                
+                g2.fillRoundRect(0, 0, getWidth(), 8, 18, 18);
+
                 g2.dispose();
             }
         };
         card.setLayout(new BorderLayout());
         card.setOpaque(false);
-        card.setBorder(new EmptyBorder(20, 20, 20, 20));
+        card.setBorder(new EmptyBorder(18, 20, 20, 20));
 
         // Top Row - Label and Icon
         JPanel topRow = new JPanel(new BorderLayout());
@@ -203,8 +209,8 @@ public class CustomerDashboardPanel extends JPanel {
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(new Color(accentColor.getRed(), accentColor.getGreen(), accentColor.getBlue(), 25));
-                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 10, 10);
+                g2.setColor(new Color(accentColor.getRed(), accentColor.getGreen(), accentColor.getBlue(), 24));
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 12, 12);
                 g2.dispose();
             }
         };
@@ -235,16 +241,20 @@ public class CustomerDashboardPanel extends JPanel {
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                
-                // Gradient background: gray-blue to dark-blue
-                GradientPaint gp = new GradientPaint(0, 0, new Color(52, 73, 94), getWidth(), 0, new Color(30, 41, 59));
+
+                // Outer shadow
+                g2.setColor(new Color(15, 23, 42, 35));
+                g2.fillRoundRect(8, 10, getWidth() - 16, getHeight() - 14, 22, 22);
+
+                // Gradient background: deep navy to royal blue
+                GradientPaint gp = new GradientPaint(0, 0, new Color(22, 47, 99), getWidth(), 0, new Color(20, 83, 136));
                 g2.setPaint(gp);
-                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 20, 20);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 22, 22);
                 g2.dispose();
             }
         };
         panel.setLayout(new GridBagLayout());
-        panel.setBorder(new EmptyBorder(25, 25, 25, 25));
+        panel.setBorder(new EmptyBorder(26, 26, 26, 26));
         panel.setMaximumSize(new Dimension(1400, 130));
         panel.setOpaque(false);
 
@@ -273,7 +283,7 @@ public class CustomerDashboardPanel extends JPanel {
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                GradientPaint gp = new GradientPaint(0, 0, new Color(14, 165, 233), getWidth(), 0, new Color(56, 189, 248));
+                GradientPaint gp = new GradientPaint(0, 0, new Color(14, 165, 233), getWidth(), 0, new Color(10, 162, 220));
                 g2.setPaint(gp);
                 g2.fillRoundRect(0, 0, getWidth(), getHeight(), 12, 12);
                 g2.dispose();
@@ -489,16 +499,18 @@ public class CustomerDashboardPanel extends JPanel {
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(new Color(15, 23, 42, 30));
+                g2.fillRoundRect(6, 10, getWidth() - 12, getHeight() - 14, 18, 18);
                 g2.setColor(Color.WHITE);
-                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 16, 16);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 18, 18);
                 g2.setColor(new Color(241, 245, 249));
-                g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 16, 16);
+                g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 18, 18);
                 g2.dispose();
             }
         };
         card.setLayout(new BorderLayout());
         card.setOpaque(false);
-        card.setBorder(new EmptyBorder(15, 20, 15, 20));
+        card.setBorder(new EmptyBorder(16, 20, 16, 20));
         card.setMaximumSize(new Dimension(1400, 160));
 
         Flight flight = booking.getOutboundFlight();
@@ -682,16 +694,18 @@ public class CustomerDashboardPanel extends JPanel {
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(new Color(15, 23, 42, 30));
+                g2.fillRoundRect(6, 10, getWidth() - 12, getHeight() - 14, 18, 18);
                 g2.setColor(Color.WHITE);
-                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 16, 16);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 18, 18);
                 g2.setColor(new Color(241, 245, 249));
-                g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 16, 16);
+                g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 18, 18);
                 g2.dispose();
             }
         };
         card.setLayout(new GridBagLayout());
         card.setOpaque(false);
-        card.setBorder(new EmptyBorder(15, 20, 15, 20));
+        card.setBorder(new EmptyBorder(16, 20, 16, 20));
         card.setMaximumSize(new Dimension(1400, 100));
         card.setCursor(new Cursor(Cursor.HAND_CURSOR));
 

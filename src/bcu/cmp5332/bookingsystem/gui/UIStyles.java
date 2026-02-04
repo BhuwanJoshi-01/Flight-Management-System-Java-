@@ -96,6 +96,7 @@ public class UIStyles {
     public static final ImageIcon ICON_CALENDAR = loadIcon("/icons/calendar-check.png");
     public static final ImageIcon ICON_EYE = loadIcon("/icons/eye.png");
     public static final ImageIcon ICON_DOWNLOAD = loadIcon("/icons/download.png");
+    public static final ImageIcon ICON_LOCK = loadIcon("/icons/lock.png");
 
     /**
      * Safely loads an icon, returning null if the resource doesn't exist.
@@ -124,6 +125,7 @@ public class UIStyles {
             for (String search : searchPaths) {
                 java.io.File file = new java.io.File(search);
                 if (file.exists()) {
+                    System.out.println("Loaded icon from: " + file.getAbsolutePath());
                     return new ImageIcon(file.getAbsolutePath());
                 }
             }
