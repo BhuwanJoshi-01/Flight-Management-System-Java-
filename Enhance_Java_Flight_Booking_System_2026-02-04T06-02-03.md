@@ -1,0 +1,15 @@
+[ ] NAME:Current Task List DESCRIPTION:Root task for conversation __NEW_AGENT__
+-[/] NAME:Flight Booking System Enhancement DESCRIPTION:Comprehensive enhancement of the Flight Booking System with Customer and Admin portals, enhanced data models, and improved UI/UX
+--[x] NAME:Task 1: Enhanced Customer Model DESCRIPTION:Add new fields to Customer: dateOfBirth, gender, rewardPoints, tier, preferredSeat, mealPreference, emailNotifications, smsNotifications, createdAt. Update CustomerDataManager for persistence with backward compatibility.
+--[x] NAME:Task 2: Enhanced Booking Model DESCRIPTION:Add booking reference number generation, passengers count, and status field to Booking model. Update BookingDataManager.
+--[/] NAME:Task 3: Validation Utilities DESCRIPTION:Create ValidationUtils class with RFC-compliant email validation, password strength validation (min 8 chars, letters/numbers), and phone validation. Update AuthService to use enhanced validation.
+--[ ] NAME:Task 4: Customer Portal - Main Window DESCRIPTION:Create CustomerMainWindow with sidebar navigation, header with user info, and panel switching. Separate from admin MainWindow.
+--[ ] NAME:Task 5: Customer Portal - Dashboard DESCRIPTION:Create CustomerDashboardPanel with KPIs (upcoming bookings, reward points, tier status), upcoming flights list, and quick actions.
+--[ ] NAME:Task 6: Customer Portal - Flight Search DESCRIPTION:Create FlightSearchPanel with filters (origin, destination, date range, price range), search results table, and book flight action.
+--[ ] NAME:Task 7: Customer Portal - My Bookings DESCRIPTION:Create MyBookingsPanel showing all customer bookings with status, cancel action with fee display, and e-ticket download simulation.
+--[ ] NAME:Task 8: Customer Portal - Profile DESCRIPTION:Create CustomerProfilePanel with personal details editing, preferences, password change, and notification settings.
+--[ ] NAME:Task 9: Admin Portal - Revenue Analytics DESCRIPTION:Create AdminRevenuePanel with revenue statistics, charts/tables by flight, date, and customer tier.
+--[ ] NAME:Task 10: Admin Portal - Settings DESCRIPTION:Create AdminSettingsPanel for system settings: dynamic pricing parameters, cancellation/rebooking fees.
+--[ ] NAME:Task 11: Login Flow Update DESCRIPTION:Update LoginWindow to route customers to CustomerMainWindow and admins to MainWindow (admin portal).
+--[ ] NAME:Task 12: Bug Fixes & Testing DESCRIPTION:Fix any bugs, ensure proper window lifecycle, handle edge cases, and test all features.
+--[ ] NAME:Task 13: Documentation DESCRIPTION:Create comprehensive IMPLEMENTATION_REPORT.md with all changes, features, and instructions.

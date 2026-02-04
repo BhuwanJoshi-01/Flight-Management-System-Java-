@@ -1,6 +1,8 @@
 package bcu.cmp5332.bookingsystem.gui;
 
+import bcu.cmp5332.bookingsystem.auth.UserSession;
 import bcu.cmp5332.bookingsystem.data.FlightBookingSystemData;
+import bcu.cmp5332.bookingsystem.gui.customer.CustomerMainWindow;
 import bcu.cmp5332.bookingsystem.model.FlightBookingSystem;
 
 import javax.swing.*;
@@ -160,10 +162,10 @@ public class LoginWindow extends JFrame {
             () -> showCard(LOGIN_CARD)         // onBackToLogin
         );
 
-        // Wrap panels in centered wrappers (no scroll panes)
-        JPanel loginWrapper = createCenteredWrapper(loginFormPanel);
-        JPanel registerWrapper = createCenteredWrapper(registerFormPanel);
-        JPanel forgotWrapper = createCenteredWrapper(forgotPasswordPanel);
+        // Wrap panels in scroll panes for small-window support
+        JScrollPane loginWrapper = createScrollableWrapper(loginFormPanel);
+        JScrollPane registerWrapper = createScrollableWrapper(registerFormPanel);
+        JScrollPane forgotWrapper = createScrollableWrapper(forgotPasswordPanel);
 
         // Add cards
         leftPanel.add(loginWrapper, LOGIN_CARD);
@@ -174,20 +176,28 @@ public class LoginWindow extends JFrame {
         showCard(LOGIN_CARD);
     }
 
-    private JPanel createCenteredWrapper(JPanel panel) {
+    private JScrollPane createScrollableWrapper(JPanel panel) {
         JPanel wrapper = new JPanel(new GridBagLayout());
         wrapper.setBackground(UIStyles.CARD_BACKGROUND);
-        
+
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.weightx = 1;
         gbc.weighty = 1;
-        gbc.fill = GridBagConstraints.NONE;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.CENTER;
-        
+        gbc.insets = new Insets(20, 20, 20, 20);
+
         wrapper.add(panel, gbc);
-        return wrapper;
+
+        JScrollPane scrollPane = new JScrollPane(wrapper,
+            ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+        scrollPane.getViewport().setBackground(UIStyles.CARD_BACKGROUND);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        return scrollPane;
     }
 
     private void createRightPanel() {
@@ -216,19 +226,29 @@ public class LoginWindow extends JFrame {
         // Hide login window
         setVisible(false);
         
-        // Open main window
+        // Check user role and open appropriate window
         SwingUtilities.invokeLater(() -> {
-            MainWindow mainWindow = new MainWindow(flightBookingSystem);
+            UserSession session = UserSession.getInstance();
             
-            // Add listener to handle logout/close
-            mainWindow.addWindowListener(new WindowAdapter() {
-                @Override
-                public void windowClosed(WindowEvent e) {
-                    // When main window is closed, check if we should show login again
-                    // For now, just exit the application
-                    handleWindowClose();
-                }
-            });
+            if (session.isAdmin()) {
+                // Admin user - open Admin Portal (MainWindow)
+                MainWindow mainWindow = new MainWindow(flightBookingSystem);
+                mainWindow.addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosed(WindowEvent e) {
+                        handleWindowClose();
+                    }
+                });
+            } else {
+                // Customer user - open Customer Portal
+                CustomerMainWindow customerWindow = new CustomerMainWindow(flightBookingSystem);
+                customerWindow.addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosed(WindowEvent e) {
+                        handleWindowClose();
+                    }
+                });
+            }
         });
 
         // Dispose login window

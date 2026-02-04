@@ -3,6 +3,7 @@ package bcu.cmp5332.bookingsystem.auth;
 import bcu.cmp5332.bookingsystem.main.FlightBookingSystemException;
 import bcu.cmp5332.bookingsystem.model.Customer;
 import bcu.cmp5332.bookingsystem.model.FlightBookingSystem;
+import bcu.cmp5332.bookingsystem.utils.ValidationUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -83,7 +84,7 @@ public class AuthService {
 
     /**
      * Registers a new customer.
-     * 
+     *
      * @param name     Customer's full name
      * @param email    Customer's email (used for login)
      * @param phone    Customer's phone number
@@ -91,23 +92,25 @@ public class AuthService {
      * @return The newly created Customer object
      * @throws FlightBookingSystemException if registration fails
      */
-    public Customer registerCustomer(String name, String email, String phone, String password) 
+    public Customer registerCustomer(String name, String email, String phone, String password)
             throws FlightBookingSystemException {
-        // Validate inputs
-        if (name == null || name.trim().isEmpty()) {
-            throw new FlightBookingSystemException("Name is required.");
+        // Validate inputs using ValidationUtils
+        if (!ValidationUtils.isValidName(name)) {
+            throw new FlightBookingSystemException("Name is required and must be at least 2 characters.");
         }
         if (email == null || email.trim().isEmpty()) {
             throw new FlightBookingSystemException("Email is required.");
         }
-        if (!isValidEmail(email)) {
-            throw new FlightBookingSystemException("Invalid email format.");
+        if (!ValidationUtils.isValidEmail(email)) {
+            throw new FlightBookingSystemException("Invalid email format. Please enter a valid email address.");
         }
-        if (phone == null || phone.trim().isEmpty()) {
-            throw new FlightBookingSystemException("Phone number is required.");
+        if (!ValidationUtils.isValidPhone(phone)) {
+            throw new FlightBookingSystemException("Invalid phone number. Please enter a valid phone number.");
         }
-        if (password == null || password.length() < 6) {
-            throw new FlightBookingSystemException("Password must be at least 6 characters.");
+        // Enhanced password validation
+        String passwordError = ValidationUtils.getPasswordError(password);
+        if (passwordError != null) {
+            throw new FlightBookingSystemException(passwordError);
         }
 
         // Check if email already exists

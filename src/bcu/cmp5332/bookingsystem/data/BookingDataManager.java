@@ -2,6 +2,7 @@ package bcu.cmp5332.bookingsystem.data;
 
 import bcu.cmp5332.bookingsystem.main.FlightBookingSystemException;
 import bcu.cmp5332.bookingsystem.model.Booking;
+import bcu.cmp5332.bookingsystem.model.Booking.BookingStatus;
 import bcu.cmp5332.bookingsystem.model.Customer;
 import bcu.cmp5332.bookingsystem.model.Flight;
 import bcu.cmp5332.bookingsystem.model.FlightBookingSystem;
@@ -19,6 +20,8 @@ public class BookingDataManager implements DataManager {
 
     @Override
     public void loadData(FlightBookingSystem fbs) throws IOException, FlightBookingSystemException {
+        int maxRefCounter = 1000;
+
         try (Scanner sc = new Scanner(new File(RESOURCE))) {
             int line_idx = 1;
             while (sc.hasNextLine()) {
@@ -95,6 +98,35 @@ public class BookingDataManager implements DataManager {
 
                     booking.setCancelled(cancelled);
                     booking.setCancellationFee(cancellationFee);
+
+                    // Load new fields with backward compatibility (indices 6-9)
+                    // reference (6)
+                    if (properties.length > 6 && !properties[6].isEmpty()) {
+                        booking.setReference(properties[6]);
+                        // Extract counter from reference to maintain uniqueness
+                        try {
+                            String[] refParts = properties[6].split("-");
+                            if (refParts.length >= 3) {
+                                int refNum = Integer.parseInt(refParts[2]);
+                                if (refNum > maxRefCounter) {
+                                    maxRefCounter = refNum;
+                                }
+                            }
+                        } catch (NumberFormatException ignore) {}
+                    }
+                    // passengerCount (7)
+                    if (properties.length > 7 && !properties[7].isEmpty()) {
+                        booking.setPassengerCount(Integer.parseInt(properties[7]));
+                    }
+                    // status (8)
+                    if (properties.length > 8 && !properties[8].isEmpty()) {
+                        booking.setStatus(BookingStatus.valueOf(properties[8]));
+                    }
+                    // specialRequests (9)
+                    if (properties.length > 9 && !properties[9].isEmpty()) {
+                        booking.setSpecialRequests(properties[9]);
+                    }
+
                     customer.addBooking(booking);
                 } catch (NumberFormatException ex) {
                     throw new FlightBookingSystemException("Unable to parse booking data on line " + line_idx
@@ -103,6 +135,9 @@ public class BookingDataManager implements DataManager {
                 line_idx++;
             }
         }
+
+        // Set the reference counter to ensure unique references for new bookings
+        Booking.setReferenceCounter(maxRefCounter + 1);
     }
 
     @Override
@@ -119,6 +154,11 @@ public class BookingDataManager implements DataManager {
                     out.print(booking.getBookingDate() + SEPARATOR);
                     out.print(booking.isCancelled() + SEPARATOR);
                     out.print(booking.getCancellationFee() + SEPARATOR);
+                    // New fields
+                    out.print(booking.getReference() + SEPARATOR);
+                    out.print(booking.getPassengerCount() + SEPARATOR);
+                    out.print(booking.getStatus().name() + SEPARATOR);
+                    out.print(booking.getSpecialRequests() + SEPARATOR);
                     out.println();
                 }
             }

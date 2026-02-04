@@ -38,37 +38,42 @@ public class LoginFormPanel extends JPanel {
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(UIStyles.CARD_BACKGROUND);
-        setBorder(new EmptyBorder(30, 50, 30, 50));
+        setBorder(new EmptyBorder(40, 50, 40, 50));
         
-        // Set fixed width for consistent appearance
-        setPreferredSize(new Dimension(400, 600));
-        setMaximumSize(new Dimension(400, 700));
+        // Allow the panel to shrink/expand with the window
+        setMinimumSize(new Dimension(320, 0));
 
         initializeComponents();
     }
 
     private void initializeComponents() {
+        // Create a wrapper panel to properly center all content
+        JPanel contentWrapper = new JPanel();
+        contentWrapper.setLayout(new BoxLayout(contentWrapper, BoxLayout.Y_AXIS));
+        contentWrapper.setBackground(UIStyles.CARD_BACKGROUND);
+        contentWrapper.setAlignmentX(Component.CENTER_ALIGNMENT);
+
         // Logo/Icon
         JLabel logoLabel = createLogoLabel();
-        logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        add(logoLabel);
-        add(Box.createVerticalStrut(20));
+        JPanel logoWrapper = createCenteredWrapper(logoLabel);
+        contentWrapper.add(logoWrapper);
+        contentWrapper.add(Box.createVerticalStrut(20));
 
         // Title
         JLabel titleLabel = new JLabel("Welcome to SkyBook");
         titleLabel.setFont(UIStyles.LOGIN_TITLE_FONT);
         titleLabel.setForeground(UIStyles.TEXT_PRIMARY);
-        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        add(titleLabel);
-        add(Box.createVerticalStrut(5));
+        JPanel titleWrapper = createCenteredWrapper(titleLabel);
+        contentWrapper.add(titleWrapper);
+        contentWrapper.add(Box.createVerticalStrut(5));
 
         // Subtitle
         JLabel subtitleLabel = new JLabel("Flight Booking System");
         subtitleLabel.setFont(UIStyles.LOGIN_SUBTITLE_FONT);
         subtitleLabel.setForeground(UIStyles.TEXT_SECONDARY);
-        subtitleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        add(subtitleLabel);
-        add(Box.createVerticalStrut(25));
+        JPanel subtitleWrapper = createCenteredWrapper(subtitleLabel);
+        contentWrapper.add(subtitleWrapper);
+        contentWrapper.add(Box.createVerticalStrut(25));
 
         // Customer/Admin Toggle
         JPanel togglePanel = UIStyles.createTogglePanel(
@@ -76,61 +81,87 @@ public class LoginFormPanel extends JPanel {
             0,
             index -> isAdminMode = (index == 1)
         );
-        togglePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        add(togglePanel);
-        add(Box.createVerticalStrut(25));
+        JPanel toggleWrapper = createCenteredWrapper(togglePanel);
+        contentWrapper.add(toggleWrapper);
+        contentWrapper.add(Box.createVerticalStrut(25));
 
         // Email field
         JLabel emailLabel = new JLabel("Email");
         emailLabel.setFont(UIStyles.LOGIN_LABEL_FONT);
         emailLabel.setForeground(UIStyles.TEXT_PRIMARY);
-        emailLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        add(emailLabel);
-        add(Box.createVerticalStrut(8));
+        JPanel emailLabelWrapper = createFullWidthWrapper(emailLabel);
+        contentWrapper.add(emailLabelWrapper);
+        contentWrapper.add(Box.createVerticalStrut(8));
 
         emailField = UIStyles.createLoginTextField("Enter your email");
-        emailField.setAlignmentX(Component.LEFT_ALIGNMENT);
-        emailField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
-        add(emailField);
-        add(Box.createVerticalStrut(15));
+        JPanel emailFieldWrapper = createFullWidthWrapper(emailField);
+        emailFieldWrapper.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
+        contentWrapper.add(emailFieldWrapper);
+        contentWrapper.add(Box.createVerticalStrut(15));
 
         // Password field
         JLabel passwordLabel = new JLabel("Password");
         passwordLabel.setFont(UIStyles.LOGIN_LABEL_FONT);
         passwordLabel.setForeground(UIStyles.TEXT_PRIMARY);
-        passwordLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        add(passwordLabel);
-        add(Box.createVerticalStrut(8));
+        JPanel passwordLabelWrapper = createFullWidthWrapper(passwordLabel);
+        contentWrapper.add(passwordLabelWrapper);
+        contentWrapper.add(Box.createVerticalStrut(8));
 
         JPanel passwordPanel = createPasswordPanel();
-        passwordPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        add(passwordPanel);
-        add(Box.createVerticalStrut(15));
+        JPanel passwordPanelWrapper = createFullWidthWrapper(passwordPanel);
+        passwordPanelWrapper.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
+        contentWrapper.add(passwordPanelWrapper);
+        contentWrapper.add(Box.createVerticalStrut(15));
 
         // Remember me & Forgot password row
         JPanel optionsPanel = createOptionsPanel();
-        optionsPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        add(optionsPanel);
-        add(Box.createVerticalStrut(20));
+        JPanel optionsWrapper = createFullWidthWrapper(optionsPanel);
+        contentWrapper.add(optionsWrapper);
+        contentWrapper.add(Box.createVerticalStrut(20));
 
         // Sign In button
         JButton signInButton = UIStyles.createLoginButton("Sign In");
-        signInButton.setAlignmentX(Component.LEFT_ALIGNMENT);
         signInButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
         signInButton.addActionListener(e -> handleLogin());
-        add(signInButton);
-        add(Box.createVerticalStrut(20));
+        JPanel buttonWrapper = createFullWidthWrapper(signInButton);
+        buttonWrapper.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
+        contentWrapper.add(buttonWrapper);
+        contentWrapper.add(Box.createVerticalStrut(20));
 
         // Sign up link
         JPanel signUpPanel = createSignUpPanel();
-        signUpPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        add(signUpPanel);
-        add(Box.createVerticalStrut(25));
+        JPanel signUpWrapper = createCenteredWrapper(signUpPanel);
+        contentWrapper.add(signUpWrapper);
+        contentWrapper.add(Box.createVerticalStrut(25));
 
         // Demo credentials box
         JPanel demoPanel = createDemoCredentialsPanel();
-        demoPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        add(demoPanel);
+        JPanel demoWrapper = createFullWidthWrapper(demoPanel);
+        contentWrapper.add(demoWrapper);
+
+        // Add the content wrapper to main panel
+        add(contentWrapper);
+    }
+
+    /**
+     * Creates a wrapper panel that centers its content horizontally.
+     */
+    private JPanel createCenteredWrapper(JComponent component) {
+        JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        wrapper.setBackground(UIStyles.CARD_BACKGROUND);
+        wrapper.setMaximumSize(new Dimension(Integer.MAX_VALUE, component.getPreferredSize().height + 10));
+        wrapper.add(component);
+        return wrapper;
+    }
+
+    /**
+     * Creates a wrapper panel that stretches content to full width.
+     */
+    private JPanel createFullWidthWrapper(JComponent component) {
+        JPanel wrapper = new JPanel(new BorderLayout());
+        wrapper.setBackground(UIStyles.CARD_BACKGROUND);
+        wrapper.add(component, BorderLayout.CENTER);
+        return wrapper;
     }
 
     private JLabel createLogoLabel() {
@@ -241,29 +272,44 @@ public class LoginFormPanel extends JPanel {
     }
 
     private JPanel createDemoCredentialsPanel() {
-        JPanel panel = new JPanel();
+        JPanel panel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                
+                // Draw rounded background
+                g2.setColor(UIStyles.DEMO_BOX_BG);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 12, 12);
+                
+                // Draw rounded border
+                g2.setColor(UIStyles.TOGGLE_BORDER);
+                g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 12, 12);
+                
+                g2.dispose();
+            }
+        };
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBackground(UIStyles.DEMO_BOX_BG);
-        panel.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(UIStyles.TOGGLE_BORDER, 1),
-            new EmptyBorder(12, 15, 12, 15)
-        ));
-        panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 80));
+        panel.setOpaque(false);
+        panel.setBorder(new EmptyBorder(15, 18, 15, 18));
+        panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 95));
 
         JLabel titleLabel = new JLabel("Demo Credentials:");
-        titleLabel.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 12));
         titleLabel.setForeground(UIStyles.TEXT_SECONDARY);
         panel.add(titleLabel);
-        panel.add(Box.createVerticalStrut(5));
+        panel.add(Box.createVerticalStrut(8));
 
         JLabel customerLabel = new JLabel("Customer: john@example.com / password123");
-        customerLabel.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-        customerLabel.setForeground(UIStyles.TEXT_SECONDARY);
+        customerLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        customerLabel.setForeground(new Color(0x1A73E8));
         panel.add(customerLabel);
+        panel.add(Box.createVerticalStrut(4));
 
         JLabel adminLabel = new JLabel("Admin: admin@flights.com / admin123");
-        adminLabel.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-        adminLabel.setForeground(UIStyles.TEXT_SECONDARY);
+        adminLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        adminLabel.setForeground(new Color(0x1A73E8));
         panel.add(adminLabel);
 
         return panel;

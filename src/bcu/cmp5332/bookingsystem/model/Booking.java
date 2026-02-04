@@ -1,6 +1,8 @@
 package bcu.cmp5332.bookingsystem.model;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Represents a booking in the flight booking system.
@@ -11,12 +13,29 @@ public class Booking {
     /** Default cancellation fee percentage (10%) */
     public static final double CANCELLATION_FEE_PERCENTAGE = 0.10;
 
+    /** Booking status enumeration */
+    public enum BookingStatus {
+        CONFIRMED,
+        CANCELLED,
+        COMPLETED,
+        PENDING
+    }
+
+    /** Counter for generating unique booking references */
+    private static final AtomicInteger referenceCounter = new AtomicInteger(1000);
+
     private Customer customer;
     private Flight outboundFlight;
     private Flight returnFlight;  // Can be null for one-way bookings
     private LocalDate bookingDate;
     private boolean cancelled;
     private double cancellationFee;
+
+    // New fields
+    private String reference;
+    private int passengerCount;
+    private BookingStatus status;
+    private String specialRequests;
 
     /**
      * Constructor for one-way booking.
@@ -31,6 +50,10 @@ public class Booking {
         this.bookingDate = bookingDate;
         this.cancelled = false;
         this.cancellationFee = 0.0;
+        this.reference = generateReference();
+        this.passengerCount = 1;
+        this.status = BookingStatus.CONFIRMED;
+        this.specialRequests = "";
     }
 
     /**
@@ -47,6 +70,35 @@ public class Booking {
         this.bookingDate = bookingDate;
         this.cancelled = false;
         this.cancellationFee = 0.0;
+        this.reference = generateReference();
+        this.passengerCount = 1;
+        this.status = BookingStatus.CONFIRMED;
+        this.specialRequests = "";
+    }
+
+    /**
+     * Generates a unique booking reference.
+     * Format: SKY-YYYYMMDD-XXXX where XXXX is an incrementing number
+     */
+    private static String generateReference() {
+        String datePart = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        int counter = referenceCounter.incrementAndGet();
+        return String.format("SKY-%s-%04d", datePart, counter % 10000);
+    }
+
+    /**
+     * Sets the reference counter to a specific value.
+     * Used when loading data to ensure unique references.
+     */
+    public static void setReferenceCounter(int value) {
+        referenceCounter.set(value);
+    }
+
+    /**
+     * Gets the current reference counter value.
+     */
+    public static int getReferenceCounter() {
+        return referenceCounter.get();
     }
 
     public Customer getCustomer() {
@@ -91,6 +143,9 @@ public class Booking {
 
     public void setCancelled(boolean cancelled) {
         this.cancelled = cancelled;
+        if (cancelled) {
+            this.status = BookingStatus.CANCELLED;
+        }
     }
 
     public double getCancellationFee() {
@@ -99,6 +154,55 @@ public class Booking {
 
     public void setCancellationFee(double cancellationFee) {
         this.cancellationFee = cancellationFee;
+    }
+
+    // New getters and setters
+    public String getReference() {
+        return reference;
+    }
+
+    public void setReference(String reference) {
+        this.reference = reference;
+    }
+
+    public int getPassengerCount() {
+        return passengerCount;
+    }
+
+    public void setPassengerCount(int passengerCount) {
+        this.passengerCount = passengerCount;
+    }
+
+    public BookingStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(BookingStatus status) {
+        this.status = status;
+    }
+
+    public String getSpecialRequests() {
+        return specialRequests;
+    }
+
+    public void setSpecialRequests(String specialRequests) {
+        this.specialRequests = specialRequests;
+    }
+
+    /**
+     * Gets a display-friendly status string.
+     */
+    public String getStatusDisplay() {
+        if (cancelled) {
+            return "Cancelled";
+        }
+        switch (status) {
+            case CONFIRMED: return "Confirmed";
+            case COMPLETED: return "Completed";
+            case PENDING: return "Pending";
+            case CANCELLED: return "Cancelled";
+            default: return "Unknown";
+        }
     }
 
     /**
@@ -111,7 +215,7 @@ public class Booking {
         if (hasReturnFlight()) {
             total += DynamicPricing.calculatePrice(returnFlight, systemDate);
         }
-        return total;
+        return total * passengerCount;
     }
 
     /**

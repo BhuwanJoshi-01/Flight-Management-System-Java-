@@ -27,6 +27,8 @@ public class MainWindow extends JFrame implements ActionListener {
     private JButton flightsBtn;
     private JButton customersBtn;
     private JButton bookingsBtn;
+    private JButton revenueBtn;
+    private JButton settingsBtn;
     private JButton exitBtn;
 
     // Content panels
@@ -36,6 +38,8 @@ public class MainWindow extends JFrame implements ActionListener {
     private FlightsPanel flightsPanel;
     private CustomersPanel customersPanel;
     private BookingsPanel bookingsPanel;
+    private AdminRevenuePanel revenuePanel;
+    private AdminSettingsPanel settingsPanel;
 
     // Status bar
     private JLabel statusLabel;
@@ -72,10 +76,13 @@ public class MainWindow extends JFrame implements ActionListener {
         JPanel statusBar = createStatusBar();
         contentPanel = createContentPanel();
 
-        // Layout
-        add(header, BorderLayout.NORTH);
+        // Layout - Sidebar on left, Header on top of content area
+        JPanel mainContent = new JPanel(new BorderLayout());
+        mainContent.add(header, BorderLayout.NORTH);
+        mainContent.add(contentPanel, BorderLayout.CENTER);
+
         add(sidebar, BorderLayout.WEST);
-        add(contentPanel, BorderLayout.CENTER);
+        add(mainContent, BorderLayout.CENTER);
         add(statusBar, BorderLayout.SOUTH);
 
         setSize(1200, 750);
@@ -97,17 +104,27 @@ public class MainWindow extends JFrame implements ActionListener {
 
     private JPanel createHeader() {
         JPanel header = new JPanel(new BorderLayout());
-        header.setBackground(UIStyles.PRIMARY_COLOR);
-        header.setBorder(new EmptyBorder(15, 20, 15, 20));
+        header.setBackground(Color.WHITE);
+        header.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(226, 232, 240)),
+            new EmptyBorder(12, 24, 12, 24)
+        ));
 
-        JLabel titleLabel = new JLabel("Flight Booking System");
-        titleLabel.setFont(UIStyles.HEADER_FONT);
-        titleLabel.setForeground(Color.WHITE);
+        // Page title
+        JLabel titleLabel = new JLabel("Admin Control Center");
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        titleLabel.setForeground(UIStyles.SIDEBAR_COLOR);
 
+        // Date and Info
         dateLabel = new JLabel("System Date: " +
             fbs.getSystemDate().format(DateTimeFormatter.ofPattern("dd MMMM yyyy")));
+        if (UIStyles.ICON_CALENDAR != null) {
+            Image scaled = UIStyles.ICON_CALENDAR.getImage().getScaledInstance(14, 14, Image.SCALE_SMOOTH);
+            dateLabel.setIcon(new ImageIcon(scaled));
+            dateLabel.setIconTextGap(8);
+        }
         dateLabel.setFont(UIStyles.BODY_FONT);
-        dateLabel.setForeground(new Color(200, 220, 255));
+        dateLabel.setForeground(UIStyles.TEXT_SECONDARY);
 
         header.add(titleLabel, BorderLayout.WEST);
         header.add(dateLabel, BorderLayout.EAST);
@@ -120,28 +137,54 @@ public class MainWindow extends JFrame implements ActionListener {
         sidebar.setLayout(new BoxLayout(sidebar, BoxLayout.Y_AXIS));
         sidebar.setBackground(UIStyles.SIDEBAR_COLOR);
         sidebar.setPreferredSize(new Dimension(UIStyles.SIDEBAR_WIDTH, 0));
-        sidebar.setBorder(new EmptyBorder(20, 0, 20, 0));
+        sidebar.setBorder(new EmptyBorder(0, 0, 16, 0));
+
+        // Logo header
+        JPanel header = UIStyles.createSidebarLogoHeader("SkyBook", "Flight System", UIStyles.ICON_FLIGHTS);
+        header.setAlignmentX(Component.LEFT_ALIGNMENT);
+        sidebar.add(header);
+
+        // Role badge
+        JPanel roleBadge = UIStyles.createSidebarBadge("Admin Portal", true);
+        roleBadge.setBorder(new EmptyBorder(12, 16, 12, 16));
+        roleBadge.setAlignmentX(Component.LEFT_ALIGNMENT);
+        sidebar.add(roleBadge);
+        sidebar.add(Box.createVerticalStrut(6));
 
         // Navigation buttons
         dashboardBtn = UIStyles.createSidebarButton("Dashboard", UIStyles.ICON_DASHBOARD, true);
         flightsBtn   = UIStyles.createSidebarButton("Flights", UIStyles.ICON_FLIGHTS, false);
         customersBtn = UIStyles.createSidebarButton("Customers", UIStyles.ICON_CUSTOMERS, false);
         bookingsBtn  = UIStyles.createSidebarButton("Bookings", UIStyles.ICON_BOOKINGS, false);
+        revenueBtn   = UIStyles.createSidebarButton("Revenue", UIStyles.ICON_REVENUE, false);
+        settingsBtn  = UIStyles.createSidebarButton("Settings", UIStyles.ICON_SETTINGS, false);
 
         dashboardBtn.addActionListener(e -> showPanel("dashboard"));
         flightsBtn.addActionListener(e -> showPanel("flights"));
         customersBtn.addActionListener(e -> showPanel("customers"));
         bookingsBtn.addActionListener(e -> showPanel("bookings"));
+        revenueBtn.addActionListener(e -> showPanel("revenue"));
+        settingsBtn.addActionListener(e -> showPanel("settings"));
 
-        sidebar.add(dashboardBtn);
-        sidebar.add(flightsBtn);
-        sidebar.add(customersBtn);
-        sidebar.add(bookingsBtn);
+        JButton[] buttons = {dashboardBtn, flightsBtn, customersBtn, bookingsBtn, revenueBtn, settingsBtn};
+        for (JButton btn : buttons) {
+            btn.setAlignmentX(Component.LEFT_ALIGNMENT);
+            sidebar.add(btn);
+        }
+        
         sidebar.add(Box.createVerticalGlue());
 
         // Exit button at bottom
-        JButton exitBtn      = UIStyles.createSidebarButton("Exit", UIStyles.ICON_EXIT, false);
+        JPanel exitDivider = new JPanel();
+        exitDivider.setBackground(UIStyles.SIDEBAR_BORDER);
+        exitDivider.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
+        exitDivider.setAlignmentX(Component.LEFT_ALIGNMENT);
+        sidebar.add(exitDivider);
+        sidebar.add(Box.createVerticalStrut(8));
+
+        exitBtn = UIStyles.createSidebarButton("Exit", UIStyles.ICON_EXIT, false);
         exitBtn.addActionListener(e -> handleExit());
+        exitBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
         sidebar.add(exitBtn);
 
         return sidebar;
@@ -157,13 +200,27 @@ public class MainWindow extends JFrame implements ActionListener {
         flightsPanel = new FlightsPanel(this);
         customersPanel = new CustomersPanel(this);
         bookingsPanel = new BookingsPanel(this);
+        revenuePanel = new AdminRevenuePanel(this);
+        settingsPanel = new AdminSettingsPanel(this);
 
-        panel.add(dashboardPanel, "dashboard");
-        panel.add(flightsPanel, "flights");
-        panel.add(customersPanel, "customers");
-        panel.add(bookingsPanel, "bookings");
+        panel.add(wrapInScrollPane(dashboardPanel), "dashboard");
+        panel.add(wrapInScrollPane(flightsPanel), "flights");
+        panel.add(wrapInScrollPane(customersPanel), "customers");
+        panel.add(wrapInScrollPane(bookingsPanel), "bookings");
+        panel.add(wrapInScrollPane(revenuePanel), "revenue");
+        panel.add(wrapInScrollPane(settingsPanel), "settings");
 
         return panel;
+    }
+
+    private JScrollPane wrapInScrollPane(JComponent content) {
+        JScrollPane scrollPane = new JScrollPane(content,
+            ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+        scrollPane.getViewport().setBackground(UIStyles.BACKGROUND_COLOR);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        return scrollPane;
     }
 
     private JPanel createStatusBar() {
@@ -192,10 +249,12 @@ public class MainWindow extends JFrame implements ActionListener {
         cardLayout.show(contentPanel, panelName);
 
         // Update sidebar button states
-        dashboardBtn.setBackground(panelName.equals("dashboard") ? UIStyles.PRIMARY_COLOR : UIStyles.SIDEBAR_COLOR);
-        flightsBtn.setBackground(panelName.equals("flights") ? UIStyles.PRIMARY_COLOR : UIStyles.SIDEBAR_COLOR);
-        customersBtn.setBackground(panelName.equals("customers") ? UIStyles.PRIMARY_COLOR : UIStyles.SIDEBAR_COLOR);
-        bookingsBtn.setBackground(panelName.equals("bookings") ? UIStyles.PRIMARY_COLOR : UIStyles.SIDEBAR_COLOR);
+        UIStyles.setSidebarButtonSelected(dashboardBtn, panelName.equals("dashboard"));
+        UIStyles.setSidebarButtonSelected(flightsBtn, panelName.equals("flights"));
+        UIStyles.setSidebarButtonSelected(customersBtn, panelName.equals("customers"));
+        UIStyles.setSidebarButtonSelected(bookingsBtn, panelName.equals("bookings"));
+        UIStyles.setSidebarButtonSelected(revenueBtn, panelName.equals("revenue"));
+        UIStyles.setSidebarButtonSelected(settingsBtn, panelName.equals("settings"));
 
         // Refresh data when switching panels
         switch (panelName) {
@@ -210,6 +269,12 @@ public class MainWindow extends JFrame implements ActionListener {
                 break;
             case "bookings":
                 bookingsPanel.refreshData();
+                break;
+            case "revenue":
+                revenuePanel.refreshData();
+                break;
+            case "settings":
+                settingsPanel.refreshData();
                 break;
         }
 
@@ -250,6 +315,8 @@ public class MainWindow extends JFrame implements ActionListener {
         flightsPanel.refreshData();
         customersPanel.refreshData();
         bookingsPanel.refreshData();
+        revenuePanel.refreshData();
+        settingsPanel.refreshData();
     }
 
     @Override

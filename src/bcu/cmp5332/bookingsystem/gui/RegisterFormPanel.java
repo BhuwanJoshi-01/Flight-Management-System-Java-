@@ -36,90 +36,125 @@ public class RegisterFormPanel extends JPanel {
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(UIStyles.CARD_BACKGROUND);
-        setBorder(new EmptyBorder(30, 50, 30, 50));
+        setBorder(new EmptyBorder(40, 50, 40, 50));
         
-        // Set fixed width for consistent appearance
-        setPreferredSize(new Dimension(400, 650));
-        setMaximumSize(new Dimension(400, 750));
+        // Allow the panel to shrink/expand with the window
+        setMinimumSize(new Dimension(320, 0));
 
         initializeComponents();
     }
 
     private void initializeComponents() {
+        // Create a wrapper panel to properly center all content
+        JPanel contentWrapper = new JPanel();
+        contentWrapper.setLayout(new BoxLayout(contentWrapper, BoxLayout.Y_AXIS));
+        contentWrapper.setBackground(UIStyles.CARD_BACKGROUND);
+        contentWrapper.setAlignmentX(Component.CENTER_ALIGNMENT);
+
         // Logo/Icon
         JLabel logoLabel = createLogoLabel();
-        logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        add(logoLabel);
-        add(Box.createVerticalStrut(20));
+        JPanel logoWrapper = createCenteredWrapper(logoLabel);
+        contentWrapper.add(logoWrapper);
+        contentWrapper.add(Box.createVerticalStrut(20));
 
         // Title
         JLabel titleLabel = new JLabel("Create Account");
         titleLabel.setFont(UIStyles.LOGIN_TITLE_FONT);
         titleLabel.setForeground(UIStyles.TEXT_PRIMARY);
-        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        add(titleLabel);
-        add(Box.createVerticalStrut(5));
+        JPanel titleWrapper = createCenteredWrapper(titleLabel);
+        contentWrapper.add(titleWrapper);
+        contentWrapper.add(Box.createVerticalStrut(5));
 
         // Subtitle
         JLabel subtitleLabel = new JLabel("Join SkyBook today");
         subtitleLabel.setFont(UIStyles.LOGIN_SUBTITLE_FONT);
         subtitleLabel.setForeground(UIStyles.TEXT_SECONDARY);
-        subtitleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        add(subtitleLabel);
-        add(Box.createVerticalStrut(25));
+        JPanel subtitleWrapper = createCenteredWrapper(subtitleLabel);
+        contentWrapper.add(subtitleWrapper);
+        contentWrapper.add(Box.createVerticalStrut(25));
 
         // Name field
-        add(createFieldLabel("Full Name"));
+        contentWrapper.add(createFullWidthWrapper(createFieldLabel("Full Name")));
+        contentWrapper.add(Box.createVerticalStrut(8));
         nameField = UIStyles.createLoginTextField("Enter your full name");
-        nameField.setAlignmentX(Component.LEFT_ALIGNMENT);
-        nameField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
-        add(nameField);
-        add(Box.createVerticalStrut(12));
+        JPanel nameWrapper = createFullWidthWrapper(nameField);
+        nameWrapper.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
+        contentWrapper.add(nameWrapper);
+        contentWrapper.add(Box.createVerticalStrut(12));
 
         // Email field
-        add(createFieldLabel("Email"));
+        contentWrapper.add(createFullWidthWrapper(createFieldLabel("Email")));
+        contentWrapper.add(Box.createVerticalStrut(8));
         emailField = UIStyles.createLoginTextField("Enter your email");
-        emailField.setAlignmentX(Component.LEFT_ALIGNMENT);
-        emailField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
-        add(emailField);
-        add(Box.createVerticalStrut(12));
+        JPanel emailWrapper = createFullWidthWrapper(emailField);
+        emailWrapper.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
+        contentWrapper.add(emailWrapper);
+        contentWrapper.add(Box.createVerticalStrut(12));
 
         // Phone field
-        add(createFieldLabel("Phone Number"));
+        contentWrapper.add(createFullWidthWrapper(createFieldLabel("Phone Number")));
+        contentWrapper.add(Box.createVerticalStrut(8));
         phoneField = UIStyles.createLoginTextField("Enter your phone number");
-        phoneField.setAlignmentX(Component.LEFT_ALIGNMENT);
-        phoneField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
-        add(phoneField);
-        add(Box.createVerticalStrut(12));
+        JPanel phoneWrapper = createFullWidthWrapper(phoneField);
+        phoneWrapper.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
+        contentWrapper.add(phoneWrapper);
+        contentWrapper.add(Box.createVerticalStrut(12));
 
         // Password field
-        add(createFieldLabel("Password"));
+        contentWrapper.add(createFullWidthWrapper(createFieldLabel("Password")));
+        contentWrapper.add(Box.createVerticalStrut(8));
         passwordField = UIStyles.createLoginPasswordField("Create a password (min 6 characters)");
-        passwordField.setAlignmentX(Component.LEFT_ALIGNMENT);
-        passwordField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
-        add(passwordField);
-        add(Box.createVerticalStrut(12));
+        JPanel passwordWrapper = createFullWidthWrapper(passwordField);
+        passwordWrapper.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
+        contentWrapper.add(passwordWrapper);
+        contentWrapper.add(Box.createVerticalStrut(12));
 
         // Confirm Password field
-        add(createFieldLabel("Confirm Password"));
+        contentWrapper.add(createFullWidthWrapper(createFieldLabel("Confirm Password")));
+        contentWrapper.add(Box.createVerticalStrut(8));
         confirmPasswordField = UIStyles.createLoginPasswordField("Confirm your password");
-        confirmPasswordField.setAlignmentX(Component.LEFT_ALIGNMENT);
-        confirmPasswordField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
-        add(confirmPasswordField);
-        add(Box.createVerticalStrut(20));
+        JPanel confirmWrapper = createFullWidthWrapper(confirmPasswordField);
+        confirmWrapper.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
+        contentWrapper.add(confirmWrapper);
+        contentWrapper.add(Box.createVerticalStrut(20));
 
         // Sign Up button
         JButton signUpButton = UIStyles.createLoginButton("Sign Up");
-        signUpButton.setAlignmentX(Component.LEFT_ALIGNMENT);
         signUpButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
         signUpButton.addActionListener(e -> handleRegister());
-        add(signUpButton);
-        add(Box.createVerticalStrut(20));
+        JPanel buttonWrapper = createFullWidthWrapper(signUpButton);
+        buttonWrapper.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
+        contentWrapper.add(buttonWrapper);
+        contentWrapper.add(Box.createVerticalStrut(20));
 
         // Sign in link
         JPanel signInPanel = createSignInPanel();
-        signInPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        add(signInPanel);
+        JPanel signInWrapper = createCenteredWrapper(signInPanel);
+        contentWrapper.add(signInWrapper);
+
+        // Add the content wrapper to main panel
+        add(contentWrapper);
+    }
+
+    /**
+     * Creates a wrapper panel that centers its content horizontally.
+     */
+    private JPanel createCenteredWrapper(JComponent component) {
+        JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        wrapper.setBackground(UIStyles.CARD_BACKGROUND);
+        wrapper.setMaximumSize(new Dimension(Integer.MAX_VALUE, component.getPreferredSize().height + 10));
+        wrapper.add(component);
+        return wrapper;
+    }
+
+    /**
+     * Creates a wrapper panel that stretches content to full width.
+     */
+    private JPanel createFullWidthWrapper(JComponent component) {
+        JPanel wrapper = new JPanel(new BorderLayout());
+        wrapper.setBackground(UIStyles.CARD_BACKGROUND);
+        wrapper.add(component, BorderLayout.CENTER);
+        return wrapper;
     }
 
     private JLabel createLogoLabel() {
@@ -156,9 +191,6 @@ public class RegisterFormPanel extends JPanel {
         JLabel label = new JLabel(text);
         label.setFont(UIStyles.LOGIN_LABEL_FONT);
         label.setForeground(UIStyles.TEXT_PRIMARY);
-        label.setAlignmentX(Component.LEFT_ALIGNMENT);
-        // Add bottom margin
-        label.setBorder(new EmptyBorder(0, 0, 8, 0));
         return label;
     }
 

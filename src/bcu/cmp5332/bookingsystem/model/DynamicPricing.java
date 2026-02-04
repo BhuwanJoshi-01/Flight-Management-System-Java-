@@ -10,9 +10,39 @@ import java.time.temporal.ChronoUnit;
 public class DynamicPricing {
 
     // Default sensitivity parameters
-    private static final double DEFAULT_ALPHA = 0.5;  // time sensitivity
-    private static final double DEFAULT_BETA = 0.8;   // capacity sensitivity
+    private static final double DEFAULT_ALPHA = 0.15;  // time sensitivity
+    private static final double DEFAULT_BETA = 0.20;   // capacity sensitivity
     private static final int DEFAULT_MAX_BOOKING_WINDOW = 30;  // days
+
+    // Configurable parameters (mutable for admin settings)
+    private static double timeSensitivity = DEFAULT_ALPHA;
+    private static double capacitySensitivity = DEFAULT_BETA;
+    private static int bookingWindowDays = DEFAULT_MAX_BOOKING_WINDOW;
+
+    // Getters
+    public static double getTimeSensitivity() { return timeSensitivity; }
+    public static double getCapacitySensitivity() { return capacitySensitivity; }
+    public static int getBookingWindowDays() { return bookingWindowDays; }
+
+    // Setters
+    public static void setTimeSensitivity(double alpha) {
+        timeSensitivity = Math.max(0, Math.min(1, alpha));
+    }
+
+    public static void setCapacitySensitivity(double beta) {
+        capacitySensitivity = Math.max(0, Math.min(1, beta));
+    }
+
+    public static void setBookingWindowDays(int days) {
+        bookingWindowDays = Math.max(1, days);
+    }
+
+    // Reset to defaults
+    public static void resetToDefaults() {
+        timeSensitivity = DEFAULT_ALPHA;
+        capacitySensitivity = DEFAULT_BETA;
+        bookingWindowDays = DEFAULT_MAX_BOOKING_WINDOW;
+    }
 
     /**
      * Calculates the dynamic price for a flight.
@@ -69,11 +99,11 @@ public class DynamicPricing {
         return calculatePrice(
             flight.getPrice(),
             daysUntilDeparture,
-            DEFAULT_MAX_BOOKING_WINDOW,
+            bookingWindowDays,
             bookedSeats,
             flight.getCapacity(),
-            DEFAULT_ALPHA,
-            DEFAULT_BETA
+            timeSensitivity,
+            capacitySensitivity
         );
     }
 }

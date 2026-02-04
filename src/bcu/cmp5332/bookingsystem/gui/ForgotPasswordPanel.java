@@ -28,9 +28,8 @@ public class ForgotPasswordPanel extends JPanel {
         setBackground(UIStyles.CARD_BACKGROUND);
         setBorder(new EmptyBorder(30, 50, 30, 50));
         
-        // Set fixed width for consistent appearance
-        setPreferredSize(new Dimension(400, 400));
-        setMaximumSize(new Dimension(400, 500));
+        // Allow the panel to shrink/expand with the window
+        setMinimumSize(new Dimension(320, 0));
 
         initializeComponents();
     }

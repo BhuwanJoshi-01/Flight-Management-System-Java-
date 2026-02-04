@@ -1,5 +1,6 @@
-1::Abdel-Rahman Tawil::07555555555::::false::false::
-2::Kostas Vlachos::07596454545::::false::false::
-3::bhuwan::9862488873::bhuwanj779@gmail.com::false::false::
-4::Legend::9862488872::bhuwanj778@gmail.com::false::false::
-5::John Doe::07123456789::john@example.com::ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f::false::
+1::Abdel-Rahman Tawil::07555555555::::false::false::::NOT_SPECIFIED::0::BRONZE::NO_PREFERENCE::STANDARD::true::false::2026-02-04::
+2::Kostas Vlachos::07596454545::::false::false::::NOT_SPECIFIED::0::BRONZE::NO_PREFERENCE::STANDARD::true::false::2026-02-04::
+3::bhuwan::9862488873::bhuwanj779@gmail.com::false::false::::NOT_SPECIFIED::0::BRONZE::NO_PREFERENCE::STANDARD::true::false::2026-02-04::
+4::Legend::9862488872::bhuwanj778@gmail.com::false::false::::NOT_SPECIFIED::0::BRONZE::NO_PREFERENCE::STANDARD::true::false::2026-02-04::
+5::John Doe::07123456789::john@example.com::ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f::false::::NOT_SPECIFIED::0::BRONZE::NO_PREFERENCE::STANDARD::true::false::2026-02-04::
+6::bhwuan joshi::9862488873::bhuwanj778@gmial.com::f8b635711e5d27bcec4ea16b5f9269c90c5100ba5b2f957646c9edd06ce18151::false::::NOT_SPECIFIED::0::BRONZE::NO_PREFERENCE::STANDARD::true::false::2026-02-04::
