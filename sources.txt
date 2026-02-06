@@ -3,6 +3,7 @@ C:\Users\Bhuwan\Downloads\FlightBookingSystem_Dist\FlightBookingSystem_Dist\src\
 C:\Users\Bhuwan\Downloads\FlightBookingSystem_Dist\FlightBookingSystem_Dist\src\bcu\cmp5332\bookingsystem\commands\AddBooking.java
 C:\Users\Bhuwan\Downloads\FlightBookingSystem_Dist\FlightBookingSystem_Dist\src\bcu\cmp5332\bookingsystem\commands\AddCustomer.java
 C:\Users\Bhuwan\Downloads\FlightBookingSystem_Dist\FlightBookingSystem_Dist\src\bcu\cmp5332\bookingsystem\commands\AddFlight.java
+C:\Users\Bhuwan\Downloads\FlightBookingSystem_Dist\FlightBookingSystem_Dist\src\bcu\cmp5332\bookingsystem\commands\EditFlight.java
 C:\Users\Bhuwan\Downloads\FlightBookingSystem_Dist\FlightBookingSystem_Dist\src\bcu\cmp5332\bookingsystem\commands\CancelBooking.java
 C:\Users\Bhuwan\Downloads\FlightBookingSystem_Dist\FlightBookingSystem_Dist\src\bcu\cmp5332\bookingsystem\commands\Command.java
 C:\Users\Bhuwan\Downloads\FlightBookingSystem_Dist\FlightBookingSystem_Dist\src\bcu\cmp5332\bookingsystem\commands\DeleteCustomer.java
@@ -21,8 +22,15 @@ C:\Users\Bhuwan\Downloads\FlightBookingSystem_Dist\FlightBookingSystem_Dist\src\
 C:\Users\Bhuwan\Downloads\FlightBookingSystem_Dist\FlightBookingSystem_Dist\src\bcu\cmp5332\bookingsystem\data\FlightDataManager.java
 C:\Users\Bhuwan\Downloads\FlightBookingSystem_Dist\FlightBookingSystem_Dist\src\bcu\cmp5332\bookingsystem\gui\AddCustomerWindow.java
 C:\Users\Bhuwan\Downloads\FlightBookingSystem_Dist\FlightBookingSystem_Dist\src\bcu\cmp5332\bookingsystem\gui\AddFlightWindow.java
-C:\Users\Bhuwan\Downloads\FlightBookingSystem_Dist\FlightBookingSystem_Dist\src\bcu\cmp5332\bookingsystem\gui\AdminRevenuePanel.java
-C:\Users\Bhuwan\Downloads\FlightBookingSystem_Dist\FlightBookingSystem_Dist\src\bcu\cmp5332\bookingsystem\gui\AdminSettingsPanel.java
+C:\Users\Bhuwan\Downloads\FlightBookingSystem_Dist\FlightBookingSystem_Dist\src\bcu\cmp5332\bookingsystem\gui\EditFlightWindow.java
+C:\Users\Bhuwan\Downloads\FlightBookingSystem_Dist\FlightBookingSystem_Dist\src\bcu\cmp5332\bookingsystem\gui\admin\AdminTheme.java
+C:\Users\Bhuwan\Downloads\FlightBookingSystem_Dist\FlightBookingSystem_Dist\src\bcu\cmp5332\bookingsystem\gui\admin\KPICard.java
+C:\Users\Bhuwan\Downloads\FlightBookingSystem_Dist\FlightBookingSystem_Dist\src\bcu\cmp5332\bookingsystem\gui\admin\AdminDashboardPanel.java
+C:\Users\Bhuwan\Downloads\FlightBookingSystem_Dist\FlightBookingSystem_Dist\src\bcu\cmp5332\bookingsystem\gui\admin\AdminFlightsPanel.java
+C:\Users\Bhuwan\Downloads\FlightBookingSystem_Dist\FlightBookingSystem_Dist\src\bcu\cmp5332\bookingsystem\gui\admin\AdminCustomersPanel.java
+C:\Users\Bhuwan\Downloads\FlightBookingSystem_Dist\FlightBookingSystem_Dist\src\bcu\cmp5332\bookingsystem\gui\admin\AdminBookingsPanel.java
+C:\Users\Bhuwan\Downloads\FlightBookingSystem_Dist\FlightBookingSystem_Dist\src\bcu\cmp5332\bookingsystem\gui\admin\AdminRevenuePanel.java
+C:\Users\Bhuwan\Downloads\FlightBookingSystem_Dist\FlightBookingSystem_Dist\src\bcu\cmp5332\bookingsystem\gui\admin\AdminSettingsPanel.java
 C:\Users\Bhuwan\Downloads\FlightBookingSystem_Dist\FlightBookingSystem_Dist\src\bcu\cmp5332\bookingsystem\gui\BookingsPanel.java
 C:\Users\Bhuwan\Downloads\FlightBookingSystem_Dist\FlightBookingSystem_Dist\src\bcu\cmp5332\bookingsystem\gui\CancelBookingWindow.java
 C:\Users\Bhuwan\Downloads\FlightBookingSystem_Dist\FlightBookingSystem_Dist\src\bcu\cmp5332\bookingsystem\gui\CustomersPanel.java

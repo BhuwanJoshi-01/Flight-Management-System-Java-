@@ -95,8 +95,12 @@ public class UIStyles {
     public static final ImageIcon ICON_PLANE = loadIcon("/icons/plane.png");
     public static final ImageIcon ICON_CALENDAR = loadIcon("/icons/calendar-check.png");
     public static final ImageIcon ICON_EYE = loadIcon("/icons/eye.png");
+    public static final ImageIcon ICON_USERS = loadIcon("/icons/users.png");
+    public static final ImageIcon ICON_EDIT = loadIcon("/icons/square-pen.png");
+    public static final ImageIcon ICON_TRASH = loadIcon("/icons/trash-2.png");
     public static final ImageIcon ICON_DOWNLOAD = loadIcon("/icons/download.png");
     public static final ImageIcon ICON_LOCK = loadIcon("/icons/lock.png");
+    public static final ImageIcon ICON_FUNNEL = loadIcon("/icons/funnel.png");
 
     /**
      * Safely loads an icon, returning null if the resource doesn't exist.

@@ -26,70 +26,104 @@ public class ForgotPasswordPanel extends JPanel {
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(UIStyles.CARD_BACKGROUND);
-        setBorder(new EmptyBorder(30, 50, 30, 50));
+        setBorder(new EmptyBorder(20, 20, 20, 20));
         
         // Allow the panel to shrink/expand with the window
-        setMinimumSize(new Dimension(320, 0));
+        setMinimumSize(new Dimension(280, 0));
+        setMaximumSize(new Dimension(450, Integer.MAX_VALUE));
 
         initializeComponents();
     }
 
     private void initializeComponents() {
+        // Create a wrapper panel to properly center all content
+        JPanel contentWrapper = new JPanel();
+        contentWrapper.setLayout(new BoxLayout(contentWrapper, BoxLayout.Y_AXIS));
+        contentWrapper.setBackground(UIStyles.CARD_BACKGROUND);
+
         // Logo/Icon
         JLabel logoLabel = createLogoLabel();
         logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        add(logoLabel);
-        add(Box.createVerticalStrut(20));
+        contentWrapper.add(logoLabel);
+        contentWrapper.add(Box.createVerticalStrut(20));
 
         // Title
         JLabel titleLabel = new JLabel("Reset Password");
         titleLabel.setFont(UIStyles.LOGIN_TITLE_FONT);
         titleLabel.setForeground(UIStyles.TEXT_PRIMARY);
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        add(titleLabel);
-        add(Box.createVerticalStrut(10));
+        contentWrapper.add(titleLabel);
+        contentWrapper.add(Box.createVerticalStrut(10));
 
-        // Subtitle - using JTextArea for proper wrapping
-        JTextArea subtitleText = new JTextArea("Enter your email address and we'll send you a link to reset your password.");
-        subtitleText.setFont(UIStyles.LOGIN_SUBTITLE_FONT);
-        subtitleText.setForeground(UIStyles.TEXT_SECONDARY);
-        subtitleText.setOpaque(false);
-        subtitleText.setEditable(false);
-        subtitleText.setFocusable(false);
-        subtitleText.setLineWrap(true);
-        subtitleText.setWrapStyleWord(true);
-        subtitleText.setAlignmentX(Component.CENTER_ALIGNMENT);
-        subtitleText.setMaximumSize(new Dimension(300, 60));
-        add(subtitleText);
-        add(Box.createVerticalStrut(30));
+        // Subtitle - using HTML for proper centering and wrapping
+        JLabel subtitleLabel = new JLabel("<html><div style='text-align: center; width: 280px;'>Enter your email address and we'll send you a link to reset your password.</div></html>");
+        subtitleLabel.setFont(UIStyles.LOGIN_SUBTITLE_FONT);
+        subtitleLabel.setForeground(UIStyles.TEXT_SECONDARY);
+        subtitleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        contentWrapper.add(subtitleLabel);
+        contentWrapper.add(Box.createVerticalStrut(30));
 
-        // Email field
+        // Email Label
         JLabel emailLabel = new JLabel("Email");
         emailLabel.setFont(UIStyles.LOGIN_LABEL_FONT);
         emailLabel.setForeground(UIStyles.TEXT_PRIMARY);
-        emailLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        add(emailLabel);
-        add(Box.createVerticalStrut(8));
-
+        emailLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        // Email field
         emailField = UIStyles.createLoginTextField("Enter your email");
-        emailField.setAlignmentX(Component.LEFT_ALIGNMENT);
-        emailField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
-        add(emailField);
-        add(Box.createVerticalStrut(20));
-
+        emailField.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
         // Send Reset Link button
         JButton resetButton = UIStyles.createLoginButton("Send Reset Link");
-        resetButton.setAlignmentX(Component.LEFT_ALIGNMENT);
-        resetButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
+        resetButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         resetButton.addActionListener(e -> handleResetRequest());
-        add(resetButton);
-        add(Box.createVerticalStrut(20));
+
+        // Create a form panel with fixed width for consistent alignment
+        JPanel formPanel = new JPanel();
+        formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
+        formPanel.setBackground(UIStyles.CARD_BACKGROUND);
+        formPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        // Set preferred/max width for form elements
+        Dimension fieldSize = new Dimension(320, 48);
+        Dimension labelSize = new Dimension(320, 25);
+        
+        emailLabel.setPreferredSize(labelSize);
+        emailLabel.setMaximumSize(labelSize);
+        emailLabel.setMinimumSize(labelSize);
+        emailLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        
+        emailField.setPreferredSize(fieldSize);
+        emailField.setMaximumSize(fieldSize);
+        emailField.setMinimumSize(fieldSize);
+        emailField.setAlignmentX(Component.LEFT_ALIGNMENT);
+        
+        resetButton.setPreferredSize(fieldSize);
+        resetButton.setMaximumSize(fieldSize);
+        resetButton.setMinimumSize(fieldSize);
+        resetButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+        
+        formPanel.add(emailLabel);
+        formPanel.add(Box.createVerticalStrut(8));
+        formPanel.add(emailField);
+        formPanel.add(Box.createVerticalStrut(20));
+        formPanel.add(resetButton);
+        
+        // Wrap form panel to center it
+        JPanel formWrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        formWrapper.setBackground(UIStyles.CARD_BACKGROUND);
+        formWrapper.add(formPanel);
+        contentWrapper.add(formWrapper);
+        contentWrapper.add(Box.createVerticalStrut(20));
 
         // Back to login link
         JButton backButton = UIStyles.createLinkButton("Back to login");
         backButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         backButton.addActionListener(e -> onBackToLogin.run());
-        add(backButton);
+        contentWrapper.add(backButton);
+
+        // Add the content wrapper to main panel
+        add(contentWrapper);
     }
 
     private JLabel createLogoLabel() {

@@ -1,7 +1,9 @@
 package bcu.cmp5332.bookingsystem.gui;
 
 import bcu.cmp5332.bookingsystem.data.FlightBookingSystemData;
-import bcu.cmp5332.bookingsystem.model.FlightBookingSystem;
+import bcu.cmp5332.bookingsystem.gui.admin.*;
+import bcu.cmp5332.bookingsystem.main.FlightBookingSystemException;
+import bcu.cmp5332.bookingsystem.model.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -12,6 +14,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 /**
@@ -31,13 +34,13 @@ public class MainWindow extends JFrame implements ActionListener {
     private JButton settingsBtn;
     private JButton exitBtn;
 
-    // Content panels
+    // Content panels - using new admin panels
     private JPanel contentPanel;
     private CardLayout cardLayout;
-    private DashboardPanel dashboardPanel;
-    private FlightsPanel flightsPanel;
-    private CustomersPanel customersPanel;
-    private BookingsPanel bookingsPanel;
+    private AdminDashboardPanel dashboardPanel;
+    private AdminFlightsPanel flightsPanel;
+    private AdminCustomersPanel customersPanel;
+    private AdminBookingsPanel bookingsPanel;
     private AdminRevenuePanel revenuePanel;
     private AdminSettingsPanel settingsPanel;
 
@@ -195,11 +198,11 @@ public class MainWindow extends JFrame implements ActionListener {
         JPanel panel = new JPanel(cardLayout);
         panel.setBackground(UIStyles.BACKGROUND_COLOR);
 
-        // Create content panels
-        dashboardPanel = new DashboardPanel(this);
-        flightsPanel = new FlightsPanel(this);
-        customersPanel = new CustomersPanel(this);
-        bookingsPanel = new BookingsPanel(this);
+        // Create content panels - using new admin panels
+        dashboardPanel = new AdminDashboardPanel(this);
+        flightsPanel = new AdminFlightsPanel(this);
+        customersPanel = new AdminCustomersPanel(this);
+        bookingsPanel = new AdminBookingsPanel(this);
         revenuePanel = new AdminRevenuePanel(this);
         settingsPanel = new AdminSettingsPanel(this);
 
@@ -274,7 +277,7 @@ public class MainWindow extends JFrame implements ActionListener {
                 revenuePanel.refreshData();
                 break;
             case "settings":
-                settingsPanel.refreshData();
+                // Settings panel doesn't need refresh in this version
                 break;
         }
 
@@ -316,7 +319,166 @@ public class MainWindow extends JFrame implements ActionListener {
         customersPanel.refreshData();
         bookingsPanel.refreshData();
         revenuePanel.refreshData();
-        settingsPanel.refreshData();
+        // settingsPanel doesn't need refresh in this version
+    }
+
+    // ==================== Admin Panel Helper Methods ====================
+
+    /**
+     * Shows the Add Flight dialog.
+     */
+    public void showAddFlightDialog() {
+        new AddFlightWindow(this);
+        refreshAllPanels();
+        statusLabel.setText("Flight operation completed");
+    }
+
+    /**
+     * Shows the Edit Flight dialog.
+     */
+    public void showEditFlightDialog(int flightId) {
+        new EditFlightWindow(this, flightId);
+        refreshAllPanels();
+        statusLabel.setText("Flight updated successfully");
+    }
+
+    /**
+     * Shows the Add Customer dialog.
+     */
+    public void showAddCustomerDialog() {
+        new AddCustomerWindow(this);
+        refreshAllPanels();
+        statusLabel.setText("Customer operation completed");
+    }
+
+    /**
+     * Shows the Booking dialog.
+     */
+    public void showBookingDialog() {
+        new IssueBookingWindow(this);
+        refreshAllPanels();
+        statusLabel.setText("Booking operation completed");
+    }
+
+    /**
+     * Shows flight details.
+     */
+    public void showFlightDetails(int flightId) {
+        try {
+            Flight flight = fbs.getFlightByID(flightId);
+            StringBuilder info = new StringBuilder();
+            info.append("Flight Number: ").append(flight.getFlightNumber()).append("\n");
+            info.append("Origin: ").append(flight.getOrigin()).append("\n");
+            info.append("Destination: ").append(flight.getDestination()).append("\n");
+            info.append("Date: ").append(flight.getDepartureDate().format(DateTimeFormatter.ofPattern("dd MMM yyyy"))).append("\n");
+            info.append("Capacity: ").append(flight.getCapacity()).append("\n");
+            info.append("Available Seats: ").append(flight.getAvailableSeats()).append("\n");
+            info.append("Base Price: £").append(String.format("%.2f", flight.getPrice()));
+            
+            JOptionPane.showMessageDialog(this, info.toString(), 
+                "Flight Details - " + flight.getFlightNumber(), JOptionPane.INFORMATION_MESSAGE);
+        } catch (FlightBookingSystemException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+     * Shows flight passengers.
+     */
+    public void showFlightPassengers(int flightId) {
+        try {
+            Flight flight = fbs.getFlightByID(flightId);
+            java.util.List<Customer> passengers = flight.getPassengers();
+            
+            if (passengers.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "No passengers booked on this flight.",
+                    "Passengers - " + flight.getFlightNumber(), JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+            
+            StringBuilder info = new StringBuilder();
+            info.append("Passengers on flight ").append(flight.getFlightNumber()).append(":\n\n");
+            for (Customer p : passengers) {
+                info.append("• ").append(p.getName()).append(" (").append(p.getEmail()).append(")\n");
+            }
+            
+            JOptionPane.showMessageDialog(this, info.toString(),
+                "Passengers - " + flight.getFlightNumber(), JOptionPane.INFORMATION_MESSAGE);
+        } catch (FlightBookingSystemException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+     * Shows customer details.
+     */
+    public void showCustomerDetails(int customerId) {
+        try {
+            Customer customer = fbs.getCustomerByID(customerId);
+            StringBuilder info = new StringBuilder();
+            info.append("Name: ").append(customer.getName()).append("\n");
+            info.append("Email: ").append(customer.getEmail()).append("\n");
+            info.append("Phone: ").append(customer.getPhone()).append("\n");
+            info.append("Tier: ").append(customer.getTier()).append("\n");
+            info.append("Reward Points: ").append(customer.getRewardPoints()).append("\n");
+            info.append("Active Bookings: ").append(customer.getBookings().size());
+            
+            JOptionPane.showMessageDialog(this, info.toString(),
+                "Customer Details - " + customer.getName(), JOptionPane.INFORMATION_MESSAGE);
+        } catch (FlightBookingSystemException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+     * Deletes a flight (soft delete).
+     */
+    public void deleteFlight(int flightId) {
+        try {
+            fbs.deleteFlight(flightId);
+            FlightBookingSystemData.store(fbs);
+            refreshAllPanels();
+            statusLabel.setText("Flight deleted successfully");
+        } catch (FlightBookingSystemException | IOException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+     * Deletes a customer (soft delete).
+     */
+    public void deleteCustomer(int customerId) {
+        try {
+            fbs.deleteCustomer(customerId);
+            FlightBookingSystemData.store(fbs);
+            refreshAllPanels();
+            statusLabel.setText("Customer deleted successfully");
+        } catch (FlightBookingSystemException | IOException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+     * Cancels a booking.
+     */
+    public void cancelBooking(int customerId, int flightId) {
+        try {
+            Customer customer = fbs.getCustomerByID(customerId);
+            Flight flight = fbs.getFlightByID(flightId);
+            customer.cancelBookingForFlight(flight);
+            FlightBookingSystemData.store(fbs);
+            refreshAllPanels();
+            statusLabel.setText("Booking cancelled successfully");
+        } catch (FlightBookingSystemException | IOException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+     * Navigates to the specified panel.
+     */
+    public void navigateToPanel(String panelName) {
+        showPanel(panelName);
     }
 
     @Override

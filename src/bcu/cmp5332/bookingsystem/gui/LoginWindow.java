@@ -26,7 +26,7 @@ public class LoginWindow extends JFrame {
 
     private static final int WINDOW_WIDTH = 1100;
     private static final int WINDOW_HEIGHT = 700;
-    private static final int BREAKPOINT_WIDTH = 800;
+    private static final int BREAKPOINT_WIDTH = 700;
 
     private final FlightBookingSystem flightBookingSystem;
     
@@ -62,7 +62,7 @@ public class LoginWindow extends JFrame {
         // Window setup
         setTitle("SkyBook - Flight Booking System");
         setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-        setMinimumSize(new Dimension(500, 600));
+        setMinimumSize(new Dimension(350, 500));
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -102,17 +102,17 @@ public class LoginWindow extends JFrame {
         GridBagConstraints gbc = new GridBagConstraints();
         
         if (heroVisible) {
-            // Left panel (form) - 45% width
+            // Left panel (form) - 60% width for better visibility
             gbc.gridx = 0;
             gbc.gridy = 0;
-            gbc.weightx = 0.45;
+            gbc.weightx = 0.60;
             gbc.weighty = 1.0;
             gbc.fill = GridBagConstraints.BOTH;
             mainPanel.add(leftPanel, gbc);
             
-            // Right panel (hero) - 55% width
+            // Right panel (hero) - 40% width
             gbc.gridx = 1;
-            gbc.weightx = 0.55;
+            gbc.weightx = 0.40;
             mainPanel.add(heroPanel, gbc);
         } else {
             // Only form panel - centered, full width
@@ -185,9 +185,9 @@ public class LoginWindow extends JFrame {
         gbc.gridy = 0;
         gbc.weightx = 1;
         gbc.weighty = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.fill = GridBagConstraints.BOTH;
         gbc.anchor = GridBagConstraints.CENTER;
-        gbc.insets = new Insets(20, 20, 20, 20);
+        gbc.insets = new Insets(15, 15, 15, 15);
 
         wrapper.add(panel, gbc);
 
@@ -197,6 +197,7 @@ public class LoginWindow extends JFrame {
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
         scrollPane.getViewport().setBackground(UIStyles.CARD_BACKGROUND);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        scrollPane.getHorizontalScrollBar().setUnitIncrement(16);
         return scrollPane;
     }
 

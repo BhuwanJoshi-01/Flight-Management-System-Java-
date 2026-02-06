@@ -38,10 +38,11 @@ public class LoginFormPanel extends JPanel {
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(UIStyles.CARD_BACKGROUND);
-        setBorder(new EmptyBorder(40, 50, 40, 50));
+        setBorder(new EmptyBorder(20, 20, 20, 20));
         
         // Allow the panel to shrink/expand with the window
-        setMinimumSize(new Dimension(320, 0));
+        setMinimumSize(new Dimension(280, 0));
+        setMaximumSize(new Dimension(450, Integer.MAX_VALUE));
 
         initializeComponents();
     }
